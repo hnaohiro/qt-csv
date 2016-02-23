@@ -86,7 +86,7 @@ QList<QStringList> CSV::parseFromFile(const QString &filename, const QString &co
     QFile file(filename);
     if (file.open(QIODevice::ReadOnly)) {
         QTextStream in(&file);
-        in.setCodec(QTextCodec::codecForName(codec.toAscii()));
+        in.setCodec(QTextCodec::codecForName(codec.toLatin1()));
         string = in.readAll();
         file.close();
     }
@@ -101,7 +101,10 @@ bool CSV::write(const QList<QStringList> data, const QString &filename, const QS
     }
 
     QTextStream out(&file);
-    out.setCodec(codec.toAscii());
+
+    if (!codec.isEmpty()) {
+        out.setCodec(codec.toLatin1());
+    }
 
     foreach (const QStringList &line, data) {
         QStringList output;
